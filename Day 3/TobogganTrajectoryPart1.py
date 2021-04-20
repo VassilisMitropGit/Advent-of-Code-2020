@@ -9,7 +9,6 @@ treeCount = 0
 reachedFinalRow = False
 column = 0
 row = 0
-print(length)
 
 while not reachedFinalRow:
     if (column >= length):
