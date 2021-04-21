@@ -3,7 +3,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class PassportProcessingPart1{
+public class PassportProcessing{
     public static int validPassports = 0;
     public static void main(String args[]){
         try{
