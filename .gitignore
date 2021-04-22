@@ -46,3 +46,6 @@ $RECYCLE.BIN/
 
 *.json
 node_modules/
+*.csproj
+\obj
+\net5.0
