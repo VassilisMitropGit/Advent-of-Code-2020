@@ -30,6 +30,9 @@ namespace Day_7
             //regulations.ToList().ForEach(x => Console.WriteLine(x.Value));
             int bagContained = findPart1Solution(regulations, "shiny gold");
             Console.WriteLine(bagContained);
+
+            int numberOfBagsContained = findPart2Solution(regulations, "shiny gold");
+            Console.WriteLine(numberOfBagsContained);
         }
 
         public static int findPart1Solution(Dictionary<string, Dictionary<string, int>> regulations, string bagColor){
@@ -37,6 +40,10 @@ namespace Day_7
                 bags.ContainsKey(bagColor) || bags.Keys.Any(z => bagContained(regulations[z]));
 
             return regulations.Values.Count(bagContained);
+        }
+
+        public static int findPart2Solution(Dictionary<string, Dictionary<string, int>> regulations, string bagColor){
+            return regulations[bagColor].Sum(z => z.Value + (z.Value * findPart2Solution(regulations, z.Key)));
         }
     }
 }
