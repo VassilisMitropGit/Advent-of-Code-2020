@@ -4,10 +4,10 @@ var accumulator = 0
 var commandArray = []
 
 //Since we are reading a local file, we choose to read it using readFileSync
-var expenseReport = fs.readFileSync('HandheldHalting.txt', 'utf-8').split("\n")
+var ourInput = fs.readFileSync('HandheldHalting.txt', 'utf-8').split("\n")
 
-for (let index = 0; index < expenseReport.length; index++) {
-    const element = expenseReport[index];
+for (let index = 0; index < ourInput.length; index++) {
+    const element = ourInput[index];
     commandArray[index] = [element.trim(), false]
 }
 
