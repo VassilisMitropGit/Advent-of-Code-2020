@@ -15,17 +15,28 @@ namespace Day_7
     {
         static void Main(string[] args)
         {
-
-            Dictionary<string, int> bags = new Dictionary<string, int>();
             var regulations = System.IO.File.ReadLines(@"HandyHaversacks.txt").
+                Select(line => Regex.Match(line, @"(.*) bags contain(?: (\d+ .*?) bags?[,.])*")).
                 ToDictionary(
-                    line => Regex.Match(line, @"^(\w+ \w+)").Groups[1].Value,
-                    line => line.Contains("no other bags.")
-                        ? Console.WriteLine("zonk!")
-                        : Console.WriteLine("got him")
+                    i => i.Groups[1].Value,
+                    i => i.Groups[2].Captures
+                        .Select(j => j.Value.Split(' ', 2))
+                        .ToDictionary(
+                            k => k[1],
+                            k => int.Parse(k[0])
+                        )
                 );
 
-            regulations.ToList().ForEach(x => Console.WriteLine(x.Key));
+            //regulations.ToList().ForEach(x => Console.WriteLine(x.Value));
+            int bagContained = findPart1Solution(regulations, "shiny gold");
+            Console.WriteLine(bagContained);
+        }
+
+        public static int findPart1Solution(Dictionary<string, Dictionary<string, int>> regulations, string bagColor){
+            bool bagContained(Dictionary<string, int> bags) =>
+                bags.ContainsKey(bagColor) || bags.Keys.Any(z => bagContained(regulations[z]));
+
+            return regulations.Values.Count(bagContained);
         }
     }
 }
