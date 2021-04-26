@@ -8,33 +8,31 @@ void main() {
 
   bool finished = false;
   while (!finished) {
+    var tempSeatMap = new List<String>.from(seatMap);
     for (var i = 0; i < rows; i++) {
       for (var j = 0; j < columns; j++) {
         var myAdjasentCoordinates = calculateAdjasentCoordinates(i, j);
-        var myAdjasentSeats = ajdasentSeats(i, j, myAdjasentCoordinates, seatMap);
-        var prevSeatMap = seatMap;
-        seatMap = enforceRules(seatMap, myAdjasentSeats, i, j);
-        if (prevSeatMap == seatMap)
-          finished = true;
-        else
-          finished = false;
+        var myAdjasentSeats = ajdasentSeats(rows, columns, myAdjasentCoordinates, tempSeatMap);
+        seatMap = enforceRules(seatMap, myAdjasentSeats, i, j, tempSeatMap);
       }
     }
+    print("Zonk");
+    if (isEqual(tempSeatMap, seatMap)) finished = true;
   }
 
   int occupiedSeats = calculateOccupiedSeats(seatMap);
   print(occupiedSeats);
 }
 
-enforceRules(List<String> seatSnapshot, List<String> adjSeats, int x, int y) {
+enforceRules(List<String> seatSnapshot, List<String> adjSeats, int x, int y, List<String> ref) {
   int occupiedSeats = 0;
   for (var item in adjSeats) {
     if (item == "#") occupiedSeats++;
   }
 
-  if (seatSnapshot[x][y] == "L" && occupiedSeats == 0)
+  if (ref[x][y] == "L" && occupiedSeats == 0)
     seatSnapshot[x] = seatSnapshot[x].substring(0, y) + "#" + seatSnapshot[x].substring(y + 1);
-  else if (seatSnapshot[x][y] == "#" && occupiedSeats >= 4)
+  else if (ref[x][y] == "#" && occupiedSeats >= 4)
     seatSnapshot[x] = seatSnapshot[x].substring(0, y) + "L" + seatSnapshot[x].substring(y + 1);
 
   return seatSnapshot;
@@ -79,6 +77,7 @@ ajdasentSeats(int rows, int columns, Map<String, Map<String, int>> coord, List<S
     adjSeats.add(seatSnapshot[coord['SW']!['x']!][coord['SW']!['y']!]);
   if (coord['SE']!['x']! <= rows - 1 && coord['SE']!['y']! <= columns - 1)
     adjSeats.add(seatSnapshot[coord['SE']!['x']!][coord['SE']!['y']!]);
+
   return adjSeats;
 }
 
@@ -90,4 +89,15 @@ calculateOccupiedSeats(List<String> seats) {
     }
   }
   return occupiedSeats;
+}
+
+isEqual(List<String> a, List<String> b) {
+  bool equal = true;
+  for (var i = 0; i < a.length; i++) {
+    if (a[0] != b[0]) {
+      equal = false;
+      break;
+    }
+  }
+  return equal;
 }
