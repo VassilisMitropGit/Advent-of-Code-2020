@@ -3,39 +3,34 @@ import 'dart:io';
 void main() {
   File input = File("../SeatingSystem.txt");
   var seatMap = input.readAsLinesSync();
+  List<String> tempSeatMap;
   int rows = seatMap.length;
   int columns = seatMap[0].length;
 
   bool finished = false;
   while (!finished) {
-    var tempSeatMap = new List<String>.from(seatMap);
+    tempSeatMap = List.from(seatMap);
     for (var i = 0; i < rows; i++) {
       for (var j = 0; j < columns; j++) {
         var myAdjasentCoordinates = calculateAdjasentCoordinates(i, j);
         var myAdjasentSeats = ajdasentSeats(rows, columns, myAdjasentCoordinates, tempSeatMap);
-        seatMap = enforceRules(seatMap, myAdjasentSeats, i, j);
+
+        int occupiedSeats = 0;
+        for (var item in myAdjasentSeats) {
+          if (item == "#") occupiedSeats++;
+        }
+
+        if (tempSeatMap[i][j] == "L" && occupiedSeats == 0)
+          seatMap[i] = seatMap[i].substring(0, j) + '#' + seatMap[i].substring(j + 1);
+        else if (tempSeatMap[i][j] == "#" && occupiedSeats >= 4)
+          seatMap[i] = seatMap[i].substring(0, j) + 'L' + seatMap[i].substring(j + 1);
       }
     }
-    print("Zonk");
     if (isEqual(tempSeatMap, seatMap)) finished = true;
   }
 
   int occupiedSeats = calculateOccupiedSeats(seatMap);
   print(occupiedSeats);
-}
-
-enforceRules(List<String> seatSnapshot, List<String> adjSeats, int x, int y) {
-  int occupiedSeats = 0;
-  for (var item in adjSeats) {
-    if (item == "#") occupiedSeats++;
-  }
-
-  if (seatSnapshot[x][y] == "L" && occupiedSeats == 0)
-    seatSnapshot[x] = seatSnapshot[x].substring(0, y) + "#" + seatSnapshot[x].substring(y + 1);
-  else if (seatSnapshot[x][y] == "#" && occupiedSeats >= 4)
-    seatSnapshot[x] = seatSnapshot[x].substring(0, y) + "L" + seatSnapshot[x].substring(y + 1);
-
-  return seatSnapshot;
 }
 
 calculateAdjasentCoordinates(int x, int y) {
@@ -85,7 +80,7 @@ calculateOccupiedSeats(List<String> seats) {
   int occupiedSeats = 0;
   for (var i = 0; i < seats.length; i++) {
     for (var j = 0; j < seats[i].length; j++) {
-      if (seats[i][j] == "#") occupiedSeats++;
+      if (seats[i][j] == '#') occupiedSeats++;
     }
   }
   return occupiedSeats;
@@ -94,7 +89,7 @@ calculateOccupiedSeats(List<String> seats) {
 isEqual(List<String> a, List<String> b) {
   bool equal = true;
   for (var i = 0; i < a.length; i++) {
-    if (a[0] != b[0]) {
+    if (a[i] != b[i]) {
       equal = false;
       break;
     }
