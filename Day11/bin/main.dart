@@ -12,9 +12,12 @@ void main() {
     tempSeatMap = List.from(seatMap);
     for (var i = 0; i < rows; i++) {
       for (var j = 0; j < columns; j++) {
-        var myAdjasentCoordinates = calculateAdjasentCoordinates(i, j);
-        var myAdjasentSeats = ajdasentSeats(rows, columns, myAdjasentCoordinates, tempSeatMap);
+        //Part 1 adjasentSeats
+        //var myAdjasentCoordinates = calculateAdjasentCoordinates(i, j);
+        //var myAdjasentSeats = ajdasentSeats(rows, columns, myAdjasentCoordinates, tempSeatMap);
 
+        //Part 2 adjasentSeats
+        var myAdjasentSeats = seatsInVision(rows, columns, i, j, tempSeatMap);
         int occupiedSeats = 0;
         for (var item in myAdjasentSeats) {
           if (item == "#") occupiedSeats++;
@@ -22,7 +25,7 @@ void main() {
 
         if (tempSeatMap[i][j] == "L" && occupiedSeats == 0)
           seatMap[i] = seatMap[i].substring(0, j) + '#' + seatMap[i].substring(j + 1);
-        else if (tempSeatMap[i][j] == "#" && occupiedSeats >= 4)
+        else if (tempSeatMap[i][j] == "#" && occupiedSeats >= 5)
           seatMap[i] = seatMap[i].substring(0, j) + 'L' + seatMap[i].substring(j + 1);
       }
     }
@@ -95,4 +98,134 @@ isEqual(List<String> a, List<String> b) {
     }
   }
   return equal;
+}
+
+seatsInVision(int rows, int columns, int startX, int startY, List<String> seatSnapshot) {
+  List<String> adjSeats = [];
+  bool outOfBounds = false;
+  int x = startX;
+  int y = startY;
+  //calculate North seat
+  while (!outOfBounds) {
+    x -= 1;
+    if (x >= 0) {
+      if (seatSnapshot[x][y] == "#" || seatSnapshot[x][y] == "L") {
+        adjSeats.add(seatSnapshot[x][y]);
+        break;
+      }
+    } else {
+      outOfBounds = true;
+    }
+  }
+  //calculate South seat
+  outOfBounds = false;
+  x = startX;
+  y = startY;
+  while (!outOfBounds) {
+    x += 1;
+    if (x <= rows - 1) {
+      if (seatSnapshot[x][y] == "#" || seatSnapshot[x][y] == "L") {
+        adjSeats.add(seatSnapshot[x][y]);
+        break;
+      }
+    } else {
+      outOfBounds = true;
+    }
+  }
+  //calculate West seat
+  x = startX;
+  y = startY;
+  outOfBounds = false;
+  while (!outOfBounds) {
+    y -= 1;
+    if (y >= 0) {
+      if (seatSnapshot[x][y] == "#" || seatSnapshot[x][y] == "L") {
+        adjSeats.add(seatSnapshot[x][y]);
+        break;
+      }
+    } else {
+      outOfBounds = true;
+    }
+  }
+  //calculate East seat
+  outOfBounds = false;
+  x = startX;
+  y = startY;
+  while (!outOfBounds) {
+    y += 1;
+    if (y <= columns - 1) {
+      if (seatSnapshot[x][y] == "#" || seatSnapshot[x][y] == "L") {
+        adjSeats.add(seatSnapshot[x][y]);
+        break;
+      }
+    } else {
+      outOfBounds = true;
+    }
+  }
+  //calculate NorthWest seat
+  outOfBounds = false;
+  x = startX;
+  y = startY;
+  while (!outOfBounds) {
+    x -= 1;
+    y -= 1;
+    if (y >= 0 && x >= 0) {
+      if (seatSnapshot[x][y] == "#" || seatSnapshot[x][y] == "L") {
+        adjSeats.add(seatSnapshot[x][y]);
+        break;
+      }
+    } else {
+      outOfBounds = true;
+    }
+  }
+  //calculate NorthEast seat
+  outOfBounds = false;
+  x = startX;
+  y = startY;
+  while (!outOfBounds) {
+    x -= 1;
+    y += 1;
+    if (y <= columns - 1 && x >= 0) {
+      if (seatSnapshot[x][y] == "#" || seatSnapshot[x][y] == "L") {
+        adjSeats.add(seatSnapshot[x][y]);
+        break;
+      }
+    } else {
+      outOfBounds = true;
+    }
+  }
+  //calculate SouthWest seat
+  outOfBounds = false;
+  x = startX;
+  y = startY;
+  while (!outOfBounds) {
+    x += 1;
+    y -= 1;
+    if (y >= 0 && x <= rows - 1) {
+      if (seatSnapshot[x][y] == "#" || seatSnapshot[x][y] == "L") {
+        adjSeats.add(seatSnapshot[x][y]);
+        break;
+      }
+    } else {
+      outOfBounds = true;
+    }
+  }
+  //calculate SouthEast seat
+  outOfBounds = false;
+  x = startX;
+  y = startY;
+  while (!outOfBounds) {
+    x += 1;
+    y += 1;
+    if (y <= columns - 1 && x <= rows - 1) {
+      if (seatSnapshot[x][y] == "#" || seatSnapshot[x][y] == "L") {
+        adjSeats.add(seatSnapshot[x][y]);
+        break;
+      }
+    } else {
+      outOfBounds = true;
+    }
+  }
+
+  return adjSeats;
 }
