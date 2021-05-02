@@ -5,20 +5,8 @@ void main() {
   List<String> input = myFile.readAsLinesSync();
   num myTimestamp = num.parse(input[0]);
   List<num> availableBusses = parseBusses(input[1]);
-  bool busFound = false;
-  num lowestWaitTime = -double.infinity;
-  num busID = 0;
 
-  availableBusses.forEach((element) {
-    num approximation = (myTimestamp / element).floor() + 1;
-    if ((myTimestamp - approximation * element) > lowestWaitTime) {
-      lowestWaitTime = (myTimestamp - approximation * element);
-      busID = element;
-    }
-    ;
-  });
-
-  print(lowestWaitTime.abs() * busID);
+  findLowestWaitTime(myTimestamp, availableBusses);
 }
 
 parseBusses(String busList) {
@@ -30,4 +18,19 @@ parseBusses(String busList) {
     }
   }
   return availableBusses;
+}
+
+findLowestWaitTime(num myTimestamp, List<num> availableBusses) {
+  num lowestWaitTime = -double.infinity;
+  num busID = 0;
+  availableBusses.forEach((element) {
+    num approximation = (myTimestamp / element).floor() + 1;
+    if ((myTimestamp - approximation * element) > lowestWaitTime) {
+      lowestWaitTime = (myTimestamp - approximation * element);
+      busID = element;
+    }
+    ;
+  });
+
+  print(lowestWaitTime.abs() * busID);
 }
