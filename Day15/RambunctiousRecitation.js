@@ -16,7 +16,7 @@ var lastNumberSpoken = parseInt(startingNumbers[startingNumbers.length-1])
 var numberSpoken
 
 //Let the game begin
-for (let index = startingNumbers.length + 1; index <= 2020; index++) {
+for (let index = startingNumbers.length + 1; index <= 30000000; index++) {
     //Determine what number we are going to say next
     if (game.has(lastNumberSpoken)){
         numberSpoken = game.get(lastNumberSpoken)[0] - game.get(lastNumberSpoken)[1]
