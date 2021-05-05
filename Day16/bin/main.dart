@@ -41,13 +41,31 @@ void main() {
   List<Set> columnValues = parseColumns(validTickets);
   List<Set> columnRestrictions = calculateCorrectNumbersInColumns(ticketRules);
 
-  for (var column in columnValues) {
-    int validCounter = 0;
-    for (var rule in columnRestrictions) {
-      if (column.difference(rule).isEmpty) validCounter++;
+  Map<int, List<int>> match = {};
+  int ruleIndex = 0;
+  int columnIndex = 0;
+  List<int> columnIndexes = [];
+  for (var rule in columnRestrictions) {
+    columnIndex = 0;
+    columnIndexes.clear();
+    for (var column in columnValues) {
+      if (column.difference(rule).isEmpty) {
+        columnIndexes.add(columnIndex);
+      }
+      columnIndex++;
     }
-    print(validCounter);
+    match[ruleIndex] = List.from(columnIndexes);
+    ruleIndex++;
   }
+  var matched = new Set();
+  var matches = matchRulesWithColumns(match, matched);
+
+  var result = 1;
+  var myTicketValues = myTicket[0].split(",");
+  for (var i = 0; i < 6; i++) {
+    result *= int.parse(myTicketValues[matches[i]![0]]);
+  }
+  print(result);
 }
 
 calculateCorrectNumbers(List<String> ticketRules) {
@@ -134,4 +152,21 @@ calculateCorrectNumbersInColumns(List<String> ticketRules) {
   }
 
   return columnRules;
+}
+
+matchRulesWithColumns(Map<int, List<int>> match, Set matched) {
+  for (var i = 0; i < match.length; i++) {
+    for (var key in match.keys) {
+      if (match[key]!.length == 1 && !matched.contains(match[key]![0])) {
+        for (var zonk in match.keys) {
+          if (match[zonk]!.length != 1) {
+            match[zonk]!.remove(match[key]![0]);
+          }
+        }
+        matched.add(match[key]![0]);
+      }
+    }
+  }
+
+  return match;
 }
