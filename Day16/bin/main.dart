@@ -33,6 +33,21 @@ void main() {
   Set correctNumbers = calculateCorrectNumbers(ticketRules);
   //Part 1
   calculateTicketScanErrorRate(correctNumbers, nearbyTickets);
+
+  //Part 2
+  List<String> validTickets = discardInvalidTickets(correctNumbers, List.from(nearbyTickets));
+  validTickets.add(myTicket[0]);
+
+  List<Set> columnValues = parseColumns(validTickets);
+  List<Set> columnRestrictions = calculateCorrectNumbersInColumns(ticketRules);
+
+  for (var column in columnValues) {
+    int validCounter = 0;
+    for (var rule in columnRestrictions) {
+      if (column.difference(rule).isEmpty) validCounter++;
+    }
+    print(validCounter);
+  }
 }
 
 calculateCorrectNumbers(List<String> ticketRules) {
@@ -65,4 +80,58 @@ calculateTicketScanErrorRate(Set correctNumbers, List<String> nearbyTickets) {
   }
 
   print(ticketScanErrorRate);
+}
+
+discardInvalidTickets(Set correctNumbers, List<String> nearbyTickets) {
+  List<String> validTickets = [];
+  bool valid = true;
+  for (var i = 0; i < nearbyTickets.length; i++) {
+    var values = nearbyTickets[i].split(",");
+    valid = true;
+    for (var value in values) {
+      if (!correctNumbers.contains(int.parse(value))) {
+        valid = false;
+        break;
+      }
+    }
+    if (valid) validTickets.add(nearbyTickets[i]);
+  }
+  return validTickets;
+}
+
+parseColumns(List<String> validTickets) {
+  var columnValuesSet = new Set();
+  List<Set> columnValuesTotal = [];
+  for (var i = 0; i < validTickets[0].split(",").length; i++) {
+    columnValuesSet.clear();
+    for (var j = 0; j < validTickets.length; j++) {
+      var eachValue = validTickets[j].split(",");
+      columnValuesSet.add(int.parse(eachValue[i]));
+    }
+    columnValuesTotal.insert(i, Set.from(columnValuesSet));
+  }
+  return columnValuesTotal;
+}
+
+calculateCorrectNumbersInColumns(List<String> ticketRules) {
+  List<Set> columnRules = [];
+  var correctNumbers = new Set();
+  RegExp rangeExp = new RegExp(r"[0-9]+");
+  var i = 0;
+  for (var line in ticketRules) {
+    correctNumbers.clear();
+    var range = rangeExp.allMatches(line).map((z) => z.group(0)).toList();
+    var firstRangeList = [for (var i = int.parse(range[0]!); i < int.parse(range[1]!) + 1; i++) i];
+    var secondRangeList = [for (var i = int.parse(range[2]!); i < int.parse(range[3]!) + 1; i++) i];
+    for (var number in firstRangeList) {
+      correctNumbers.add(number);
+    }
+    for (var number in secondRangeList) {
+      correctNumbers.add(number);
+    }
+    columnRules.insert(i, Set.from(correctNumbers));
+    i++;
+  }
+
+  return columnRules;
 }
